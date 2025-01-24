@@ -1,51 +1,66 @@
 import 'package:flutter/material.dart';
-import 'answer_button.dart';
+import 'package:myapp/answer_button.dart';
+import 'package:myapp/data/quizz.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class QuestionsScreen extends StatelessWidget {
+class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({super.key});
 
   @override
+  State<QuestionsScreen> createState(){
+    return _QuestionScreenState();
+  }
+}
+
+class _QuestionScreenState extends State<QuestionsScreen> {
+  int currentQuestionIndex = 0;
+
+  void answerQuestion(){
+    setState(() {
+      if (currentQuestionIndex < questions.length - 1){
+        currentQuestionIndex++;
+      } else{
+        currentQuestionIndex = 0;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quiz Questions'),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.purple, Colors.deepPurple],
+    final currentQuestion = questions[currentQuestionIndex];
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurple, Colors.purple],
+            ),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
+          child: SizedBox(
             child: Container(
               margin: const EdgeInsets.all(40),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'What are the main building blocks of Flutter UIs?',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+                  Text(
+                    currentQuestion.question,
+                    style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 201, 153, 251),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
-                  AnswerButton('Functions'),
-                  const SizedBox(height: 10),
-                  AnswerButton('Components'),
-                  const SizedBox(height: 10),
-                  AnswerButton('Blocks'),
-                  const SizedBox(height: 10),
-                  AnswerButton('Widgets'),
-                ],
-              ),
+                  ...currentQuestion.getShuffledAnswers().map((answer){
+                    return AnswersButton(answer: answer, onTap: answerQuestion);
+                  },)
+                ]
+              )
             ),
-          ),
-        ),
-      ),
+          )
+        )
+      )
     );
   }
 }

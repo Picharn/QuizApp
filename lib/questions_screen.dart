@@ -14,9 +14,11 @@ class QuestionsScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionsScreen> {
   int currentQuestionIndex = 0;
+  final List<String> selectedAnswers = [];
 
-  void answerQuestion(){
+  void answerQuestion(String selectedAnswers){
     setState(() {
+      selectedAnswers.add(selectedAnswers);
       if (currentQuestionIndex < questions.length - 1){
         currentQuestionIndex++;
       } else{
